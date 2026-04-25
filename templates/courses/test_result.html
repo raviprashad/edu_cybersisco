@@ -1,0 +1,11 @@
+<h2>Test Result</h2>
+
+<p>Your Score: {{ score }}%</p>
+
+{% if passed %}
+    <p style="color:green;">✅ Passed</p>
+{% else %}
+    <p style="color:red;">❌ Failed</p>
+{% endif %}
+
+<a href="/dashboard/student/">Back to Dashboard</a>

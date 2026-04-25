@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>DEBUG MODULE PAGE</h1>
+
+<p>Module: {{ module.title }}</p>
+<p>Materials count: {{ materials|length }}</p>
+
+<hr>
+
+{% for material in materials %}
+    <p>RAW OBJECT: {{ material }}</p>
+    <p>CONTENT: {{ material.content }}</p>
+    <p>VIDEO: {{ material.video_url }}</p>
+    <hr>
+{% endfor %}
+<a href="/courses/test/{{ module.id }}/">Take Test</a>
+
+{% endblock %}
+
+

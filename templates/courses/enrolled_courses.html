@@ -1,0 +1,13 @@
+<h2>My Courses</h2>
+
+<a href="/dashboard/student/">⬅ Back to Dashboard</a>
+<br><br>
+
+{% for course in courses %}
+    <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+        <h3>{{ course.title }}</h3>
+        <a href="/courses/{{ course.id }}/">Open Course</a>
+    </div>
+{% empty %}
+    <p>No enrolled courses yet.</p>
+{% endfor %}
