@@ -2,21 +2,30 @@
 
 {% block content %}
 
-<h1>DEBUG MODULE PAGE</h1>
-
-<p>Module: {{ module.title }}</p>
-<p>Materials count: {{ materials|length }}</p>
-
-<hr>
+<h2>{{ module.title }}</h2>
 
 {% for material in materials %}
-    <p>RAW OBJECT: {{ material }}</p>
-    <p>CONTENT: {{ material.content }}</p>
-    <p>VIDEO: {{ material.video_url }}</p>
-    <hr>
+    <div style="border:1px solid #ccc; padding:15px; margin:10px;">
+        <h4>{{ material.title }}</h4>
+
+        {% if material.content_text %}
+            <p>{{ material.content_text }}</p>
+        {% endif %}
+
+        {% if material.video_url %}
+            <iframe width="560" height="315"
+                src="{{ material.video_url }}"
+                frameborder="0"
+                allowfullscreen>
+            </iframe>
+        {% endif %}
+
+    </div>
+{% empty %}
+    <p>No study material available for this module.</p>
 {% endfor %}
-<a href="/courses/test/{{ module.id }}/">Take Test</a>
+
+<br>
+<a href="/courses/test/{{ module.id }}/">Take Test →</a>
 
 {% endblock %}
-
-

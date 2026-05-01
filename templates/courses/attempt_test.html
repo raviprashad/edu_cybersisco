@@ -9,13 +9,13 @@
 
     {% for question in questions %}
         <div style="border:1px solid #ccc; padding:10px; margin:10px;">
-            
-            <p><strong>{{ question.text }}</strong></p>
+
+            <p><strong>{{ question.question_text }}</strong></p>
 
             {% for option in question.options.all %}
                 <label>
                     <input type="radio" name="{{ question.id }}" value="{{ option.id }}">
-                    {{ option.text }}
+                    {{ option.option_text }}
                 </label><br>
             {% empty %}
                 <p>No options available</p>
@@ -23,7 +23,7 @@
 
         </div>
     {% empty %}
-        <p>No questions available</p>
+        <p>No questions available for this test.</p>
     {% endfor %}
 
     <button type="submit">Submit Test</button>

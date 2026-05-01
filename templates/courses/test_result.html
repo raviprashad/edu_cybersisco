@@ -1,11 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h2>Test Result</h2>
 
-<p>Your Score: {{ score }}%</p>
+<p>Your Score: <strong>{{ score|floatformat:1 }}%</strong></p>
 
 {% if passed %}
-    <p style="color:green;">✅ Passed</p>
+    <p style="color:green; font-size:20px;">✅ Passed! Module completed.</p>
 {% else %}
-    <p style="color:red;">❌ Failed</p>
+    <p style="color:red; font-size:20px;">❌ Failed. Try again.</p>
 {% endif %}
 
-<a href="/dashboard/student/">Back to Dashboard</a>
+<br>
+<a href="/dashboard/student/">← Back to Dashboard</a>
+
+{% endblock %}
