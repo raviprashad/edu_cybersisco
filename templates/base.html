@@ -1,189 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduTech LMS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --bg: #0f1117;
-            --surface: #1a1d27;
-            --surface2: #222636;
-            --border: #2e3248;
-            --accent: #6c63ff;
-            --accent2: #00d4aa;
-            --danger: #ff4d6d;
-            --text: #e8eaf0;
-            --muted: #7b82a0;
-            --nav-h: 60px;
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-
-        /* NAV */
-        nav {
-            height: var(--nav-h);
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            padding: 0 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            gap: 2rem;
-        }
-
-        .nav-brand {
-            font-family: 'Space Mono', monospace;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--accent);
-            text-decoration: none;
-            letter-spacing: -0.5px;
-            margin-right: auto;
-        }
-
-        nav a {
-            color: var(--muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-
-        nav a:hover {
-            color: var(--text);
-            background: var(--surface2);
-        }
-
-        nav a.active {
-            color: var(--accent);
-            background: rgba(108, 99, 255, 0.12);
-        }
-
-        .nav-logout {
-            color: var(--danger) !important;
-            border: 1px solid transparent;
-        }
-
-        .nav-logout:hover {
-            border-color: var(--danger) !important;
-            background: rgba(255, 77, 109, 0.08) !important;
-        }
-
-        /* MAIN */
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2.5rem 2rem;
-        }
-
-        /* CARDS */
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-
-        /* BUTTONS */
-        .btn {
-            display: inline-block;
-            padding: 0.55rem 1.2rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-            font-family: 'DM Sans', sans-serif;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-        }
-
-        .btn-primary:hover { opacity: 0.85; }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
-
-        .btn-outline:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* PROGRESS BAR */
-        .progress-bar {
-            background: var(--surface2);
-            border-radius: 99px;
-            height: 8px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 99px;
-            background: linear-gradient(90deg, var(--accent), var(--accent2));
-            transition: width 0.6s ease;
-        }
-
-        /* TAGS */
-        .tag {
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-        }
-
-        .tag-green { background: rgba(0, 212, 170, 0.15); color: var(--accent2); }
-        .tag-red { background: rgba(255, 77, 109, 0.15); color: var(--danger); }
-        .tag-purple { background: rgba(108, 99, 255, 0.15); color: var(--accent); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}EduTech LMS{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-<nav>
-    <a href="/" class="nav-brand">⚡ EduTech</a>
+<nav class="navbar">
+  <a href="/" class="navbar-brand">Edu<span>Tech</span></a>
 
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <ul class="navbar-links" id="navLinks">
     {% if user.is_authenticated %}
-        {% if user.user_type == 'admin' %}
-            <a href="/dashboard/admin/">Dashboard</a>
-            <a href="/admin/">Admin Panel</a>
-            <a href="/courses/">Courses</a>
-        {% else %}
-            <a href="/dashboard/student/">Dashboard</a>
-            <a href="/courses/">All Courses</a>
-            <a href="/courses/enrolled/">My Courses</a>
-        {% endif %}
-        <a href="/auth/logout/" class="nav-logout">Logout</a>
+      {% if user.user_type == 'admin' %}
+        <li><a href="/dashboard/admin/">Dashboard</a></li>
+        <li><a href="/admin/">Admin Panel</a></li>
+        <li><a href="/courses/">Courses</a></li>
+      {% else %}
+        <li><a href="/dashboard/student/">Dashboard</a></li>
+        <li><a href="/courses/">All Courses</a></li>
+        <li><a href="/courses/enrolled/">My Courses</a></li>
+      {% endif %}
+      <li><a href="/auth/logout/" class="nav-logout">Logout</a></li>
     {% else %}
-        <a href="/auth/login/">Login</a>
-        <a href="/auth/register/">Register</a>
+      <li><a href="/auth/login/">Login</a></li>
+      <li><a href="/auth/register/" class="nav-cta">Get Started</a></li>
     {% endif %}
+  </ul>
 </nav>
 
-<main>
-    {% block content %}{% endblock %}
-</main>
+{% block full_content %}
+<div class="page">
+  {% block content %}{% endblock %}
+</div>
+{% endblock %}
 
+<script src="{% static 'js/nav.js' %}"></script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>
