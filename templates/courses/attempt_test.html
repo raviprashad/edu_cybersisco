@@ -1,32 +1,48 @@
 {% extends 'base.html' %}
+{% block title %}Test — {{ module.title }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="static/css/courses.css">{% endblock %}
 
 {% block content %}
 
-<h2>Test: {{ module.title }}</h2>
+<div class="test-header">
+  <div>
+    <h1>{{ module.title }}</h1>
+    <p>Answer all questions and submit. You need {{ module.test.passing_percentage }}% to pass.</p>
+  </div>
+  <div class="test-timer" id="testTimer" data-minutes="15">15:00</div>
+</div>
 
-<form method="POST">
-    {% csrf_token %}
+<form method="POST" id="testForm">
+  {% csrf_token %}
 
-    {% for question in questions %}
-        <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+  {% for question in questions %}
+  <div class="question-card">
+    <div class="question-num">Question {{ forloop.counter }} of {{ questions|length }}</div>
+    <div class="question-text">{{ question.question_text }}</div>
+    <div class="options-list">
+      {% for option in question.options.all %}
+      <label class="option-label">
+        <input type="radio" name="{{ question.id }}" value="{{ option.id }}">
+        {{ option.option_text }}
+      </label>
+      {% empty %}
+        <p class="text-muted">No options available.</p>
+      {% endfor %}
+    </div>
+  </div>
+  {% empty %}
+  <div class="card text-muted text-center" style="padding:3rem;">
+    No questions have been added to this test yet.
+  </div>
+  {% endfor %}
 
-            <p><strong>{{ question.question_text }}</strong></p>
-
-            {% for option in question.options.all %}
-                <label>
-                    <input type="radio" name="{{ question.id }}" value="{{ option.id }}">
-                    {{ option.option_text }}
-                </label><br>
-            {% empty %}
-                <p>No options available</p>
-            {% endfor %}
-
-        </div>
-    {% empty %}
-        <p>No questions available for this test.</p>
-    {% endfor %}
-
-    <button type="submit">Submit Test</button>
+  <div class="test-submit-bar">
+    <div class="text-muted" style="font-size:.875rem;">
+      Answered: <strong id="answeredCount">0</strong> / <strong id="totalCount">0</strong>
+    </div>
+    <button type="submit" class="btn btn-accent btn-lg">Submit Test →</button>
+  </div>
 </form>
 
 {% endblock %}
+{% block extra_js %}<script src="static/js/test.js"></script>{% endblock %}

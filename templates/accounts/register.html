@@ -1,13 +1,40 @@
-<h2>Register</h2>
-<form method="POST">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username"><br>
-    <input type="password" name="password" placeholder="Password"><br>
+{% extends 'base.html' %}
+{% block title %}Register — EduTech{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="static/css/auth.css">{% endblock %}
 
-    <select name="user_type">
-        <option value="student">Student</option>
-        <option value="admin">Admin</option>
-    </select><br>
+{% block full_content %}
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-text">Edu<span>Tech</span></div>
+    </div>
 
-    <button type="submit">Register</button>
-</form>
+    <div class="auth-title">Create account</div>
+    <div class="auth-sub">Join EduTech and start learning today</div>
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input class="form-input" type="text" id="username" name="username" placeholder="Choose a username" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input class="form-input" type="password" id="password" name="password" placeholder="Create a password" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="user_type">I am a</label>
+        <select class="form-input" id="user_type" name="user_type">
+          <option value="student">Student</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <button class="form-submit" type="submit">Create Account</button>
+    </form>
+
+    <div class="auth-footer">
+      Already have an account? <a href="/auth/login/">Sign in →</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

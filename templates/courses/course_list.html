@@ -1,12 +1,35 @@
-<h2>Available Courses</h2>
+{% extends 'base.html' %}
+{% block title %}Courses — EduTech{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="static/css/courses.css">{% endblock %}
 
-{% for course in courses %}
-    <div style="border:1px solid #ccc; padding:15px; margin:10px;">
-        <h3>{{ course.title }}</h3>
-        <p>{{ course.description }}</p>
+{% block content %}
+<div class="courses-header flex-between mb-4">
+  <div>
+    <div class="section-label">Catalogue</div>
+    <div class="section-title">All Courses</div>
+  </div>
+</div>
 
-        <a href="/courses/{{ course.id }}/">View Course</a>
+{% if courses %}
+<div class="courses-grid">
+  {% for course in courses %}
+  <div class="course-list-card">
+    <div class="course-thumb">📖</div>
+    <div class="course-list-body">
+      <div class="course-list-title">{{ course.title }}</div>
+      <div class="course-list-desc">{{ course.description }}</div>
     </div>
-{% empty %}
-    <p>No courses available</p>
-{% endfor %}
+    <div class="course-list-footer">
+      <span class="badge badge-blue">{{ course.modules.count }} Modules</span>
+      <a href="/courses/{{ course.id }}/" class="btn btn-primary btn-sm">View Course</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">📭</div>
+  <p>No courses available yet. Check back soon!</p>
+</div>
+{% endif %}
+{% endblock %}

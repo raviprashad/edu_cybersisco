@@ -1,327 +1,160 @@
 {% extends 'base.html' %}
+{% block title %}Admin Dashboard — EduTech{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="static/css/dashboard.css">{% endblock %}
 
 {% block content %}
 
-<style>
-    .page-title {
-        font-family: 'Space Mono', monospace;
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: var(--text);
-        margin-bottom: 0.3rem;
-    }
-
-    .page-sub {
-        color: var(--muted);
-        font-size: 0.9rem;
-        margin-bottom: 2rem;
-    }
-
-    /* STAT CARDS */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 1.4rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .stat-card::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 3px;
-        background: var(--accent-color, var(--accent));
-    }
-
-    .stat-icon {
-        font-size: 1.6rem;
-        margin-bottom: 0.8rem;
-    }
-
-    .stat-value {
-        font-family: 'Space Mono', monospace;
-        font-size: 2rem;
-        font-weight: 700;
-        line-height: 1;
-        margin-bottom: 0.3rem;
-    }
-
-    .stat-label {
-        color: var(--muted);
-        font-size: 0.8rem;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    /* TWO COLUMN LAYOUT */
-    .two-col {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
-
-    .section-title {
-        font-family: 'Space Mono', monospace;
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 1.2rem;
-        padding-bottom: 0.8rem;
-        border-bottom: 1px solid var(--border);
-    }
-
-    /* PASS RATE CIRCLE */
-    .rate-display {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 1.5rem 0;
-        gap: 0.5rem;
-    }
-
-    .rate-circle {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background: conic-gradient(
-            var(--accent2) 0% var(--pct),
-            var(--surface2) var(--pct) 100%
-        );
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-    }
-
-    .rate-inner {
-        width: 85px;
-        height: 85px;
-        border-radius: 50%;
-        background: var(--surface);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: 'Space Mono', monospace;
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--accent2);
-    }
-
-    .rate-breakdown {
-        display: flex;
-        gap: 2rem;
-        margin-top: 0.5rem;
-    }
-
-    .rate-item { text-align: center; }
-    .rate-item .val { font-family: 'Space Mono', monospace; font-size: 1.1rem; font-weight: 700; }
-    .rate-item .lbl { color: var(--muted); font-size: 0.75rem; }
-
-    /* COURSE TABLE */
-    .course-table { width: 100%; border-collapse: collapse; }
-
-    .course-table th {
-        text-align: left;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--muted);
-        padding: 0 0.8rem 0.8rem;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .course-table td {
-        padding: 0.85rem 0.8rem;
-        font-size: 0.875rem;
-        border-bottom: 1px solid var(--border);
-        vertical-align: middle;
-    }
-
-    .course-table tr:last-child td { border-bottom: none; }
-
-    .course-name { font-weight: 500; color: var(--text); }
-
-    /* RECENT ATTEMPTS TABLE */
-    .attempts-table { width: 100%; border-collapse: collapse; }
-
-    .attempts-table th {
-        text-align: left;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--muted);
-        padding: 0 0.8rem 0.8rem;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .attempts-table td {
-        padding: 0.75rem 0.8rem;
-        font-size: 0.875rem;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .attempts-table tr:last-child td { border-bottom: none; }
-</style>
-
-<p class="page-title">Admin Dashboard</p>
-<p class="page-sub">Platform overview and analytics</p>
-
-<!-- STAT CARDS -->
-<div class="stats-grid">
-    <div class="stat-card" style="--accent-color: #6c63ff;">
-        <div class="stat-icon">👨‍🎓</div>
-        <div class="stat-value">{{ total_students }}</div>
-        <div class="stat-label">Total Students</div>
-    </div>
-
-    <div class="stat-card" style="--accent-color: #00d4aa;">
-        <div class="stat-icon">📚</div>
-        <div class="stat-value">{{ total_courses }}</div>
-        <div class="stat-label">Total Courses</div>
-    </div>
-
-    <div class="stat-card" style="--accent-color: #ffd166;">
-        <div class="stat-icon">✅</div>
-        <div class="stat-value">{{ published_courses }}</div>
-        <div class="stat-label">Published</div>
-    </div>
-
-    <div class="stat-card" style="--accent-color: #ff6b6b;">
-        <div class="stat-icon">🎓</div>
-        <div class="stat-value">{{ total_enrollments }}</div>
-        <div class="stat-label">Enrollments</div>
-    </div>
-
-    <div class="stat-card" style="--accent-color: #a29bfe;">
-        <div class="stat-icon">📝</div>
-        <div class="stat-value">{{ total_attempts }}</div>
-        <div class="stat-label">Test Attempts</div>
-    </div>
+<div class="dash-header">
+  <div class="dash-greeting">Admin Dashboard</div>
+  <div class="dash-sub">Platform overview and analytics</div>
 </div>
 
-<!-- PASS RATE + COURSE STATS -->
-<div class="two-col">
+<!-- Stat Cards -->
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="stat-card-accent" style="background:#6c63ff;"></div>
+    <div class="stat-card-icon">👨‍🎓</div>
+    <div class="stat-card-value">{{ total_students }}</div>
+    <div class="stat-card-label">Students</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-accent" style="background:var(--accent2);"></div>
+    <div class="stat-card-icon">📚</div>
+    <div class="stat-card-value">{{ total_courses }}</div>
+    <div class="stat-card-label">Total Courses</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-accent" style="background:var(--success);"></div>
+    <div class="stat-card-icon">✅</div>
+    <div class="stat-card-value">{{ published_courses }}</div>
+    <div class="stat-card-label">Published</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-accent" style="background:var(--warning);"></div>
+    <div class="stat-card-icon">🎓</div>
+    <div class="stat-card-value">{{ total_enrollments }}</div>
+    <div class="stat-card-label">Enrollments</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-accent" style="background:var(--accent);"></div>
+    <div class="stat-card-icon">📝</div>
+    <div class="stat-card-value">{{ total_attempts }}</div>
+    <div class="stat-card-label">Test Attempts</div>
+  </div>
+</div>
 
-    <!-- Pass Rate -->
-    <div class="card">
-        <div class="section-title">Test Pass Rate</div>
+<!-- Pass Rate + Course Breakdown -->
+<div class="dash-grid mb-3">
 
-        <div class="rate-display">
-            <div class="rate-circle" style="--pct: {{ pass_rate }}%">
-                <div class="rate-inner">{{ pass_rate }}%</div>
-            </div>
-
-            <div class="rate-breakdown">
-                <div class="rate-item">
-                    <div class="val" style="color: var(--accent2);">{{ passed_attempts }}</div>
-                    <div class="lbl">Passed</div>
-                </div>
-                <div class="rate-item">
-                    <div class="val" style="color: var(--danger);">{{ failed_attempts }}</div>
-                    <div class="lbl">Failed</div>
-                </div>
-            </div>
+  <div class="card">
+    <div class="dash-section-title">Test Pass Rate</div>
+    <div class="pass-rate-wrap">
+      <div class="pass-rate-ring">
+        <svg width="130" height="130" viewBox="0 0 130 130">
+          <circle class="ring-bg" cx="65" cy="65" r="50"/>
+          <circle class="ring-fill" cx="65" cy="65" r="50"
+            id="passRing"
+            style="stroke-dashoffset:314;"/>
+        </svg>
+        <div class="ring-label">
+          <div class="ring-pct">{{ pass_rate }}%</div>
+          <div class="ring-sublabel">Pass Rate</div>
         </div>
+      </div>
+      <div class="pass-breakdown">
+        <div class="pb-item">
+          <div class="pb-val" style="color:var(--success);">{{ passed_attempts }}</div>
+          <div class="pb-lbl">Passed</div>
+        </div>
+        <div class="pb-item">
+          <div class="pb-val" style="color:var(--danger);">{{ failed_attempts }}</div>
+          <div class="pb-lbl">Failed</div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Course Breakdown -->
-    <div class="card">
-        <div class="section-title">Course Breakdown</div>
-
-        {% if course_stats %}
-            <table class="course-table">
-                <thead>
-                    <tr>
-                        <th>Course</th>
-                        <th>Students</th>
-                        <th>Completions</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in course_stats %}
-                    <tr>
-                        <td class="course-name">{{ item.course.title }}</td>
-                        <td>{{ item.enrolled }}</td>
-                        <td>{{ item.completed_modules }}</td>
-                        <td>
-                            {% if item.course.is_published %}
-                                <span class="tag tag-green">Live</span>
-                            {% else %}
-                                <span class="tag tag-red">Draft</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p style="color: var(--muted); text-align: center; padding: 2rem 0;">No courses yet</p>
-        {% endif %}
-    </div>
-
-</div>
-
-<!-- RECENT TEST ATTEMPTS -->
-<div class="card">
-    <div class="section-title">Recent Test Attempts</div>
-
-    {% if recent_attempts %}
-        <table class="attempts-table">
-            <thead>
-                <tr>
-                    <th>Student</th>
-                    <th>Course</th>
-                    <th>Score</th>
-                    <th>Result</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for attempt in recent_attempts %}
-                <tr>
-                    <td>{{ attempt.student.username }}</td>
-                    <td>{{ attempt.test.module.course.title }}</td>
-                    <td>
-                        <span style="font-family: 'Space Mono', monospace; font-weight: 700;">
-                            {{ attempt.score|floatformat:1 }}%
-                        </span>
-                    </td>
-                    <td>
-                        {% if attempt.passed %}
-                            <span class="tag tag-green">Passed</span>
-                        {% else %}
-                            <span class="tag tag-red">Failed</span>
-                        {% endif %}
-                    </td>
-                    <td style="color: var(--muted); font-size: 0.8rem;">
-                        {{ attempt.attempted_at|date:"M d, Y" }}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+  <div class="card">
+    <div class="dash-section-title">Course Breakdown</div>
+    {% if course_stats %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Course</th>
+          <th>Students</th>
+          <th>Completions</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in course_stats %}
+        <tr>
+          <td style="font-weight:600;">{{ item.course.title }}</td>
+          <td>{{ item.enrolled }}</td>
+          <td>{{ item.completed_modules }}</td>
+          <td>
+            {% if item.course.is_published %}
+              <span class="badge badge-green">Live</span>
+            {% else %}
+              <span class="badge badge-amber">Draft</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
     {% else %}
-        <p style="color: var(--muted); text-align: center; padding: 2rem 0;">No test attempts yet</p>
+    <p class="text-muted text-center mt-4">No courses created yet.</p>
     {% endif %}
+  </div>
+
 </div>
+
+<!-- Recent Attempts -->
+<div class="card">
+  <div class="dash-section-title">Recent Test Attempts</div>
+  {% if recent_attempts %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Course</th>
+        <th>Score</th>
+        <th>Result</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for attempt in recent_attempts %}
+      <tr>
+        <td>{{ attempt.student.username }}</td>
+        <td>{{ attempt.test.module.course.title }}</td>
+        <td><strong>{{ attempt.score|floatformat:1 }}%</strong></td>
+        <td>
+          {% if attempt.passed %}
+            <span class="badge badge-green">Passed</span>
+          {% else %}
+            <span class="badge badge-red">Failed</span>
+          {% endif %}
+        </td>
+        <td class="text-muted">{{ attempt.attempted_at|date:"M d, Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-muted text-center mt-4">No test attempts yet.</p>
+  {% endif %}
+</div>
+
+<script>
+  // Animate pass rate ring
+  const ring = document.getElementById('passRing');
+  const rate = {{ pass_rate }};
+  if (ring) {
+    const offset = 314 - (rate / 100) * 314;
+    setTimeout(() => { ring.style.transition = 'stroke-dashoffset 1s ease'; ring.style.strokeDashoffset = offset; }, 200);
+  }
+</script>
 
 {% endblock %}

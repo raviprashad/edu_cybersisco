@@ -1,177 +1,71 @@
 {% extends 'base.html' %}
+{% block title %}Dashboard — EduTech{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="static/css/dashboard.css">{% endblock %}
 
 {% block content %}
 
-<style>
-    .dash-header {
-        margin-bottom: 2rem;
-    }
-
-    .dash-title {
-        font-family: 'Space Mono', monospace;
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 0.3rem;
-    }
-
-    .dash-sub { color: var(--muted); font-size: 0.9rem; }
-
-    .quick-stats {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .qstat {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 1rem 1.5rem;
-        text-align: center;
-        min-width: 120px;
-    }
-
-    .qstat-val {
-        font-family: 'Space Mono', monospace;
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: var(--accent);
-    }
-
-    .qstat-lbl {
-        color: var(--muted);
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-top: 0.2rem;
-    }
-
-    .section-title {
-        font-family: 'Space Mono', monospace;
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 1.2rem;
-    }
-
-    .course-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 1.2rem;
-    }
-
-    .course-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 1.4rem;
-        transition: border-color 0.2s, transform 0.2s;
-    }
-
-    .course-card:hover {
-        border-color: var(--accent);
-        transform: translateY(-2px);
-    }
-
-    .course-card-title {
-        font-weight: 600;
-        font-size: 1rem;
-        margin-bottom: 0.4rem;
-    }
-
-    .course-card-meta {
-        color: var(--muted);
-        font-size: 0.8rem;
-        margin-bottom: 1rem;
-    }
-
-    .course-card-progress {
-        margin-bottom: 1rem;
-    }
-
-    .progress-label {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.78rem;
-        margin-bottom: 0.4rem;
-    }
-
-    .progress-label span:last-child {
-        font-family: 'Space Mono', monospace;
-        color: var(--accent);
-        font-weight: 700;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        color: var(--muted);
-    }
-
-    .empty-state .emoji { font-size: 3rem; margin-bottom: 1rem; }
-    .empty-state p { margin-bottom: 1.5rem; }
-</style>
-
 <div class="dash-header">
-    <div class="dash-title">Welcome back, {{ user.username }} 👋</div>
-    <div class="dash-sub">Track your learning progress</div>
+  <div class="dash-greeting">Welcome back, {{ user.username }} 👋</div>
+  <div class="dash-sub">Here's your learning progress</div>
 </div>
 
-<!-- QUICK STATS -->
-<div class="quick-stats">
-    <div class="qstat">
-        <div class="qstat-val">{{ enrolled_count }}</div>
-        <div class="qstat-lbl">Enrolled</div>
-    </div>
-    <div class="qstat">
-        <div class="qstat-val">
-            {% with data|length as total %}
-            {% if total > 0 %}
-                {{ data.0.progress|floatformat:0 }}%
-            {% else %}0%{% endif %}
-            {% endwith %}
-        </div>
-        <div class="qstat-lbl">Top Progress</div>
-    </div>
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="stat-card-accent" style="background:var(--accent2);"></div>
+    <div class="stat-card-icon">🎓</div>
+    <div class="stat-card-value">{{ enrolled_count }}</div>
+    <div class="stat-card-label">Enrolled Courses</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-accent" style="background:var(--success);"></div>
+    <div class="stat-card-icon">✅</div>
+    <div class="stat-card-value">{{ completed_count }}</div>
+    <div class="stat-card-label">Modules Completed</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-accent" style="background:var(--accent);"></div>
+    <div class="stat-card-icon">📝</div>
+    <div class="stat-card-value">{{ test_count }}</div>
+    <div class="stat-card-label">Tests Attempted</div>
+  </div>
 </div>
 
-<!-- ENROLLED COURSES -->
-<div class="section-title">My Courses</div>
+<div class="dash-section-title">
+  My Courses
+  <a href="/courses/" class="btn btn-outline btn-sm">Browse All</a>
+</div>
 
 {% if data %}
-    <div class="course-cards">
-        {% for item in data %}
-        <div class="course-card">
-            <div class="course-card-title">{{ item.course.title }}</div>
-            <div class="course-card-meta">
-                {{ item.completed }} / {{ item.total }} modules completed
-            </div>
-
-            <div class="course-card-progress">
-                <div class="progress-label">
-                    <span>Progress</span>
-                    <span>{{ item.progress }}%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: {{ item.progress }}%"></div>
-                </div>
-            </div>
-
-            <a href="/courses/{{ item.course.id }}/" class="btn btn-primary">
-                {% if item.progress == 100 %}Review{% else %}Continue{% endif %}
-            </a>
-        </div>
-        {% endfor %}
+<div class="course-cards">
+  {% for item in data %}
+  <div class="course-card">
+    <div class="course-card-title">{{ item.course.title }}</div>
+    <div class="course-card-meta">
+      📚 {{ item.completed }} of {{ item.total }} modules completed
     </div>
-
+    <div>
+      <div class="progress-row">
+        <span class="text-muted">Progress</span>
+        <span class="progress-pct">{{ item.progress }}%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:{{ item.progress }}%"></div>
+      </div>
+    </div>
+    <div class="course-card-footer">
+      <a href="/courses/{{ item.course.id }}/" class="btn btn-primary btn-sm">
+        {% if item.progress == 100 %}Review Course{% else %}Continue Learning{% endif %}
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 {% else %}
-    <div class="empty-state">
-        <div class="emoji">📚</div>
-        <p>You haven't enrolled in any courses yet.</p>
-        <a href="/courses/" class="btn btn-primary">Browse Courses</a>
-    </div>
+<div class="empty-state">
+  <div class="empty-icon">📚</div>
+  <p>You haven't enrolled in any courses yet.</p>
+  <a href="/courses/" class="btn btn-accent">Browse Courses</a>
+</div>
 {% endif %}
 
 {% endblock %}

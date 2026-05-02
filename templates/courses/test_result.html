@@ -1,18 +1,54 @@
 {% extends 'base.html' %}
+{% block title %}Result — EduTech{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="static/css/courses.css">{% endblock %}
 
 {% block content %}
+<div class="result-card card">
 
-<h2>Test Result</h2>
+  <div class="result-score-ring">
+    <svg width="150" height="150" viewBox="0 0 150 150">
+      <circle class="result-ring-bg" cx="75" cy="75" r="65"/>
+      <circle class="result-ring-fill {% if passed %}pass{% else %}fail{% endif %}"
+        cx="75" cy="75" r="65"
+        id="resultRing"
+        style="stroke-dashoffset: {{ stroke_offset|default:'408' }}"/>
+    </svg>
+    <div class="result-label">
+      <div class="result-pct" style="color: {% if passed %}var(--success){% else %}var(--danger){% endif %};">
+        {{ score|floatformat:0 }}%
+      </div>
+      <div class="result-sublabel">Score</div>
+    </div>
+  </div>
 
-<p>Your Score: <strong>{{ score|floatformat:1 }}%</strong></p>
+  {% if passed %}
+    <div class="result-verdict" style="color:var(--success);">🎉 You Passed!</div>
+    <p class="text-muted">Great work! This module is now marked as complete.</p>
+  {% else %}
+    <div class="result-verdict" style="color:var(--danger);">❌ Not Passed</div>
+    <p class="text-muted">You scored {{ score|floatformat:1 }}%. Review the material and try again.</p>
+  {% endif %}
 
-{% if passed %}
-    <p style="color:green; font-size:20px;">✅ Passed! Module completed.</p>
-{% else %}
-    <p style="color:red; font-size:20px;">❌ Failed. Try again.</p>
-{% endif %}
+  <div class="result-actions">
+    <a href="/dashboard/student/" class="btn btn-outline">My Dashboard</a>
+    {% if not passed %}
+      <a href="javascript:history.back()" class="btn btn-accent">Try Again</a>
+    {% else %}
+      <a href="/courses/" class="btn btn-primary">Browse More Courses</a>
+    {% endif %}
+  </div>
 
-<br>
-<a href="/dashboard/student/">← Back to Dashboard</a>
+</div>
 
+<script>
+  // Animate the ring on load
+  const ring = document.getElementById('resultRing');
+  const score = {{ score|floatformat:0 }};
+  const circumference = 408;
+  const offset = circumference - (score / 100) * circumference;
+  if (ring) {
+    ring.style.strokeDashoffset = circumference; // start empty
+    setTimeout(() => { ring.style.strokeDashoffset = offset; }, 100);
+  }
+</script>
 {% endblock %}

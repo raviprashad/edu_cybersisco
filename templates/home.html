@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}EduTech — Learn Smarter{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="static/css/home.css">{% endblock %}
+
+{% block full_content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🎓 Professional Learning Platform</div>
+    <h1>Learn Skills That<br><em>Actually Matter</em></h1>
+    <p>Structured courses, hands-on modules, and real assessments. Everything you need to grow — in one place.</p>
+    <div class="hero-actions">
+      {% if user.is_authenticated %}
+        <a href="/courses/" class="btn-hero-primary">Browse Courses →</a>
+        <a href="{% if user.user_type == 'admin' %}/dashboard/admin/{% else %}/dashboard/student/{% endif %}" class="btn-hero-outline">My Dashboard</a>
+      {% else %}
+        <a href="/auth/register/" class="btn-hero-primary">Start Learning Free →</a>
+        <a href="/auth/login/" class="btn-hero-outline">Sign In</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stats-strip-inner">
+    <div class="stat-item">
+      <div class="num">500+</div>
+      <div class="lbl">Students Enrolled</div>
+    </div>
+    <div class="stat-item">
+      <div class="num">50+</div>
+      <div class="lbl">Courses Available</div>
+    </div>
+    <div class="stat-item">
+      <div class="num">95%</div>
+      <div class="lbl">Completion Rate</div>
+    </div>
+    <div class="stat-item">
+      <div class="num">24/7</div>
+      <div class="lbl">Access Anywhere</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="text-center mb-4">
+    <div class="section-label" style="text-align:center;">Why EduTech</div>
+    <div class="section-title" style="text-align:center;">Everything you need to learn effectively</div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📚</div>
+      <h3>Structured Courses</h3>
+      <p>Content organized into clear modules so you always know what to study next and never feel lost.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎬</div>
+      <h3>Video + Text Content</h3>
+      <p>Every module supports both text lessons and embedded video — learn in the style that works for you.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📝</div>
+      <h3>Module Assessments</h3>
+      <p>MCQ tests at the end of each module reinforce learning and unlock the next step on your journey.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Progress Tracking</h3>
+      <p>Your dashboard shows exactly where you are — how many modules completed, scores, and what's next.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔐</div>
+      <h3>Secure & Private</h3>
+      <p>Role-based access ensures students see their content and admins manage the platform safely.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Instant Feedback</h3>
+      <p>Submit a test and get your score immediately — pass, continue learning. Fail, review and retry.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="home-cta">
+  <h2>Ready to start learning?</h2>
+  <p>Join hundreds of students already building real skills on EduTech.</p>
+  {% if user.is_authenticated %}
+    <a href="/courses/" class="btn-hero-primary" style="display:inline-flex;align-items:center;gap:.5rem;background:var(--accent);color:#fff;padding:.85rem 2.2rem;font-size:1rem;font-weight:700;border-radius:10px;text-decoration:none;">Browse Courses →</a>
+  {% else %}
+    <a href="/auth/register/" class="btn-hero-primary" style="display:inline-flex;align-items:center;gap:.5rem;background:var(--accent);color:#fff;padding:.85rem 2.2rem;font-size:1rem;font-weight:700;border-radius:10px;text-decoration:none;">Create Free Account →</a>
+  {% endif %}
+</section>
+
+<footer>
+  <p>© 2026 EduTech LMS. Built with Django.</p>
+</footer>
+
+{% endblock %}

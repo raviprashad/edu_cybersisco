@@ -1,31 +1,65 @@
 {% extends 'base.html' %}
+{% block title %}{{ module.title }} — EduTech{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="static/css/courses.css">{% endblock %}
 
 {% block content %}
 
-<h2>{{ module.title }}</h2>
+<div class="mb-3">
+  <a href="/courses/{{ module.course.id }}/" class="btn btn-outline btn-sm">← Back to Course</a>
+</div>
 
-{% for material in materials %}
-    <div style="border:1px solid #ccc; padding:15px; margin:10px;">
-        <h4>{{ material.title }}</h4>
+<div class="module-layout">
 
-        {% if material.content_text %}
-            <p>{{ material.content_text }}</p>
-        {% endif %}
+  <!-- Main content -->
+  <div>
+    <div class="section-label">{{ module.course.title }}</div>
+    <div class="section-title mb-3">{{ module.title }}</div>
 
-        {% if material.video_url %}
-            <iframe width="560" height="315"
-                src="{{ material.video_url }}"
-                frameborder="0"
-                allowfullscreen>
-            </iframe>
-        {% endif %}
+    {% for material in materials %}
+    <div class="material-block">
+      <h3>{{ material.title }}</h3>
 
+      {% if material.content_text %}
+        <div class="material-text">{{ material.content_text|linebreaks }}</div>
+      {% endif %}
+
+      {% if material.video_url %}
+        <div class="video-wrap mt-2">
+          <iframe src="{{ material.video_url }}" allowfullscreen></iframe>
+        </div>
+      {% endif %}
     </div>
-{% empty %}
-    <p>No study material available for this module.</p>
-{% endfor %}
+    {% empty %}
+    <div class="card text-muted text-center" style="padding:3rem;">
+      No study material has been added to this module yet.
+    </div>
+    {% endfor %}
 
-<br>
-<a href="/courses/test/{{ module.id }}/">Take Test →</a>
+    <div class="card mt-3 flex-between">
+      <div>
+        <div style="font-weight:600;font-size:.9rem;">Ready to test your knowledge?</div>
+        <div class="text-muted" style="font-size:.82rem;">Complete the module test to mark this as done</div>
+      </div>
+      <a href="/courses/test/{{ module.id }}/" class="btn btn-accent">Take Test →</a>
+    </div>
+  </div>
 
+  <!-- Sidebar -->
+  <div class="module-sidebar">
+    <div class="card">
+      <div class="sidebar-title">Course Modules</div>
+      <ul class="sidebar-module-list">
+        {% for m in module.course.modules.all %}
+        <li>
+          <a href="/courses/module/{{ m.id }}/" {% if m.id == module.id %}class="current"{% endif %}>
+            <span>{{ forloop.counter }}.</span>
+            {{ m.title }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+</div>
 {% endblock %}

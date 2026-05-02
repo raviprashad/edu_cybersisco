@@ -10,4 +10,41 @@
     </div>
 {% empty %}
     <p>No enrolled courses yet.</p>
-{% endfor %}
+{% endfor %}{% load static %}
+{% extends 'base.html' %}
+{% block title %}My Courses — EduTech{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="static/css/courses.css">{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-4">
+  <div>
+    <div class="section-label">Learning</div>
+    <div class="section-title">My Enrolled Courses</div>
+  </div>
+  <a href="/courses/" class="btn btn-outline">+ Browse More</a>
+</div>
+
+{% if courses %}
+<div class="courses-grid">
+  {% for course in courses %}
+  <div class="course-list-card">
+    <div class="course-thumb">📖</div>
+    <div class="course-list-body">
+      <div class="course-list-title">{{ course.title }}</div>
+      <div class="course-list-desc">{{ course.description }}</div>
+    </div>
+    <div class="course-list-footer">
+      <span class="badge badge-green">Enrolled</span>
+      <a href="/courses/{{ course.id }}/" class="btn btn-primary btn-sm">Continue</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">🎓</div>
+  <p>You haven't enrolled in any courses yet.</p>
+  <a href="/courses/" class="btn btn-accent">Browse Courses</a>
+</div>
+{% endif %}
+{% endblock %}
